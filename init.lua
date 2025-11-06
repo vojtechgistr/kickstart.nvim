@@ -102,6 +102,7 @@ vim.g.loaded_netrwPlugin = 1
 
 -- Make line numbers default
 vim.o.number = true
+vim.o.tabstop = 2
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.o.relativenumber = true
@@ -414,45 +415,8 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        file_ignore_patterns = {
-          -- Git and Cache
-          '%.git/',
-          '%.cache/',
-
-          -- C/C++ Artifacts
-          'build*/', -- Matches 'build/', 'build-arm64/', 'cmake-build-debug/', etc.
-          'out/',
-          'bin/',
-          'obj/',
-          'Debug/',
-          'Release/',
-          '%.o', -- Object files
-          '%.a', -- Static libraries
-          '%.out', -- Generic executables
-
-          -- Python Artifacts
-          'venv/',
-          '.venv/',
-          '__pycache__/',
-
-          -- Node.js Artifacts
-          'node_modules/',
-
-          -- General Project Artifacts
-          '%.class',
-          '%.pdf',
-          '%.mkv',
-          '%.mp4',
-          '%.zip',
-          '%.log',
-
-          -- Sensitive Files (usually covered by .gitignore, but good safety)
-          '%.env',
-        },
-
         pickers = {
           find_files = {
-            -- Finder commands are now clean, relying on the global ignore list
             find_command = vim.fn.executable 'fd' == 1 and {
               'fd',
               '--type',
@@ -460,6 +424,10 @@ require('lazy').setup({
               '--strip-cwd-prefix',
               '--hidden',
               '--follow',
+              '--exclude',
+              '.git',
+              '--exclude',
+              '.cache',
             } or {
               'rg',
               '--files',
@@ -467,6 +435,34 @@ require('lazy').setup({
             },
             hidden = true,
           },
+        },
+
+        file_ignore_patterns = {
+          '.git/', -- Matches .git/ at start or after a slash
+          '.cache/',
+          -- C/C++ Artifacts
+          'build*/',
+          'out/',
+          'bin/',
+          'obj/',
+          'Debug/',
+          'Release/',
+          '%.o',
+          '%.a',
+          '%.out',
+          -- Python Artifacts
+          'venv/',
+          '.venv/',
+          '__pycache__/',
+          -- Node.js Artifacts
+          'node_modules/',
+          -- General Project Artifacts
+          '%.class',
+          '%.pdf',
+          '%.mkv',
+          '%.mp4',
+          '%.zip',
+          '%.log',
         },
 
         extensions = {
