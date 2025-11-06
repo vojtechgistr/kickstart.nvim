@@ -102,7 +102,11 @@ vim.g.loaded_netrwPlugin = 1
 
 -- Make line numbers default
 vim.o.number = true
-vim.o.tabstop = 2
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+vim.opt.cindent = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.o.relativenumber = true
@@ -286,12 +290,10 @@ require('lazy').setup({
       },
     },
   },
-
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
   -- lazy loading plugins that don't need to be loaded immediately at startup.
-  --
   -- For example, in the following configuration, we use:
   --  event = 'VimEnter'
   --
