@@ -97,6 +97,8 @@ vim.g.have_nerd_font = true
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- Make line numbers default
 vim.o.number = true
@@ -412,7 +414,61 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        file_ignore_patterns = {
+          -- Git and Cache
+          '%.git/',
+          '%.cache/',
+
+          -- C/C++ Artifacts
+          'build*/', -- Matches 'build/', 'build-arm64/', 'cmake-build-debug/', etc.
+          'out/',
+          'bin/',
+          'obj/',
+          'Debug/',
+          'Release/',
+          '%.o', -- Object files
+          '%.a', -- Static libraries
+          '%.out', -- Generic executables
+
+          -- Python Artifacts
+          'venv/',
+          '.venv/',
+          '__pycache__/',
+
+          -- Node.js Artifacts
+          'node_modules/',
+
+          -- General Project Artifacts
+          '%.class',
+          '%.pdf',
+          '%.mkv',
+          '%.mp4',
+          '%.zip',
+          '%.log',
+
+          -- Sensitive Files (usually covered by .gitignore, but good safety)
+          '%.env',
+        },
+
+        pickers = {
+          find_files = {
+            -- Finder commands are now clean, relying on the global ignore list
+            find_command = vim.fn.executable 'fd' == 1 and {
+              'fd',
+              '--type',
+              'f',
+              '--strip-cwd-prefix',
+              '--hidden',
+              '--follow',
+            } or {
+              'rg',
+              '--files',
+              '--hidden',
+            },
+            hidden = true,
+          },
+        },
+
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -459,6 +515,26 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+    end,
+  },
+
+  { -- Oil.nvim – clean file explorer, replaces netrw
+    'stevearc/oil.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('oil').setup {
+        default_file_explorer = true,
+        view_options = {
+          show_hidden = true,
+        },
+        keymaps = {
+          ['<C-h>'] = false,
+          ['<C-l>'] = false,
+        },
+      }
+
+      vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'Open parent directory' })
+      vim.keymap.set('n', '<leader> ', '<cmd>Oil --float<CR>', { desc = 'Toggle floating Oil' })
     end,
   },
 
